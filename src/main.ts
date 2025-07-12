@@ -4,6 +4,7 @@ import { upload, uploadDir } from "./config/multer";
 import { FormFields } from "./types/form";
 import { logFormSubmission, validateFormData } from "./utils";
 import multer from "multer";
+import prisma from "./config/prismaClient";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -29,15 +30,45 @@ app.post(
     if (Object.keys(validationErrors).length > 0)
       return res.status(400).json({ errors: validationErrors });
 
-    await logFormSubmission(data, file?.filename);
+    try {
+      const user = await prisma.user.create({
+        data: {
+          login: data.login,
+          password: data.password,
+          fullName: data.fullName,
+          email: data.email,
+          phone: data.phone,
+          about: data.about,
+          avatarUrl: file ? `/uploads/${file.filename}` : null,
+        },
+      });
 
-    res.json({
-      ...data,
-      avatarUrl: file ? `/uploads/${file.filename}` : null,
-    });
+      await logFormSubmission(data, file?.filename);
+
+      res.json({
+        login: user.login,
+        password: user.password,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        about: user.about,
+        avatarUrl: user.avatarUrl,
+      });
+    } catch (error: any) {
+      if (error.code === "P2002") {
+        return res.status(400).json({
+          errors: {
+            login: "Логин или email уже заняты",
+            email: "Логин или email уже заняты",
+          },
+        });
+      }
+      console.error(error);
+      res.status(500).json({ errors: { server: "Внутренняя ошибка сервера" } });
+    }
   }
 );
 
 app.listen(PORT, () =>
-  console.log(`Сервер запущен на http://localhost:${PORT}`)
+  console.log(`Сервер запущен по адресу http://localhost:${PORT}`)
 );

@@ -2,91 +2,109 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Регистрация</title>
     <link rel="stylesheet" href="./assets/css/main.css" />
-    <title>Форма</title>
   </head>
-
   <body>
-    <form
-      class="form"
-      action="/submit"
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <div class="form__group">
-        <label class="form__label" for="login">Логин</label>
-        <input class="form__input" type="text" id="login" name="login" />
-      </div>
+    <h1>Добро пожаловать на наш сайт</h1>
+    <p>Описание для регистрации, пожалуйста, заполните форму</p>
+    <button id="openFormBtn" type="button">Открыть форму регистрации</button>
 
-      <div class="form__group">
-        <label class="form__label" for="password">Пароль</label>
-        <div class="form__password">
+    <dialog id="registrationDialog">
+      <button class="close-dialog" type="button" aria-label="Закрыть форму">
+        &times;
+      </button>
+      <form
+        class="form"
+        method="post"
+        action="/submit"
+        enctype="multipart/form-data"
+        novalidate
+      >
+        <div class="form__group">
+          <label class="form__label" for="login">Логин</label>
+          <input class="form__input" type="text" id="login" name="login" />
+        </div>
+
+        <div class="form__group">
+          <label class="form__label" for="password">Пароль</label>
+          <div class="form__password">
+            <input
+              class="form__input"
+              type="password"
+              id="password"
+              name="password"
+            />
+            <button
+              class="form__toggle-password"
+              type="button"
+              aria-label="Показать пароль"
+            >
+              👁
+            </button>
+          </div>
+        </div>
+
+        <div class="form__group">
+          <label class="form__label" for="fullName">Ф.И.О.</label>
           <input
             class="form__input"
             type="text"
-            id="password"
-            name="password"
+            id="fullName"
+            name="fullName"
           />
-          <button
-            class="form__toggle-password"
-            type="button"
-            aria-label="Показать пароль"
-          >
-            👁
-          </button>
         </div>
-      </div>
 
-      <div class="form__group">
-        <label class="form__label" for="fullName">Ф.И.О.</label>
-        <input class="form__input" type="text" id="fullName" name="fullName" />
-      </div>
+        <div class="form__group">
+          <label class="form__label" for="email">E-Mail</label>
+          <input class="form__input" type="email" id="email" name="email" />
+        </div>
 
-      <div class="form__group">
-        <label class="form__label" for="email">E-Mail</label>
-        <input class="form__input" type="text" id="email" name="email" />
-      </div>
+        <div class="form__group">
+          <label class="form__label" for="phone">Телефон</label>
+          <input
+            class="form__input"
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="+7 (___) ___-__-__"
+          />
+        </div>
 
-      <div class="form__group">
-        <label class="form__label" for="phone">Телефон</label>
-        <input
-          class="form__input"
-          type="text"
-          id="phone"
-          name="phone"
-          placeholder="+7 (___) ___-__-__"
-        />
-      </div>
+        <div class="form__group">
+          <label class="form__label" for="about">О себе</label>
+          <textarea
+            class="form__input form__textarea"
+            id="about"
+            name="about"
+            rows="3"
+          ></textarea>
+        </div>
 
-      <div class="form__group">
-        <label class="form__label" for="about">О себе</label>
-        <textarea
-          class="form__input form__textarea"
-          id="about"
-          name="about"
-          rows="3"
-        ></textarea>
-      </div>
+        <div class="form__group">
+          <label class="form__label" for="fileInput">Аватар</label>
+          <input
+            class="form__input"
+            type="file"
+            id="fileInput"
+            name="avatar"
+            accept="image/jpeg,image/png,image/webp"
+          />
+        </div>
 
-      <div class="form__group">
-        <label class="form__label" for="fileInput">Аватар</label>
-        <input
-          class="form__input"
-          type="file"
-          id="fileInput"
-          name="avatar"
-          accept="image/jpeg,image/png,image/webp"
-        />
-      </div>
-
-      <button class="form__submit" type="submit">Отправить</button>
-    </form>
-
+        <button class="form__submit" type="submit">Отправить</button>
+      </form>
+    </dialog>
     <div id="result" class="form__result"></div>
-
-    <div id="result" class="form__result"></div>
-
     <script src="./assets/js/script.js"></script>
+    <script>
+      const openBtn = document.getElementById("openFormBtn");
+      const dialog = document.getElementById("registrationDialog");
+      const closeBtn = dialog.querySelector(".close-dialog");
+
+      openBtn.addEventListener("click", () => dialog.showModal());
+      closeBtn.addEventListener("click", () => dialog.close());
+    </script>
   </body>
 </html>

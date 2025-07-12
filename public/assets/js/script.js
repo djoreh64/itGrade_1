@@ -65,7 +65,14 @@ const renderResult = (data) => {
 const validators = {
   login: (v) => /^[a-zA-Z0-9]{3,}$/.test(v),
   password: (v) => v.trim().length > 0,
-  fullName: (v) => /^[А-Яа-яЁё\s\-]+$/.test(v.trim()),
+  fullName: (v) => {
+    const trimmed = v.trim();
+    if (!/^[А-Яа-яЁё\s\-]+$/.test(trimmed)) return false;
+    const words = trimmed.split(/\s+/);
+    if (words.length < 2) return false;
+    const namePattern = /^[А-ЯЁ][а-яё\-]*$/;
+    return words.every((word) => namePattern.test(word));
+  },
   email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
   phone: (v) => /^\+7\s?\(?\d{3}\)?\s?\d{3}-?\d{2}-?\d{2}$/.test(v),
   about: (v) => v.trim().length > 0,
@@ -74,7 +81,8 @@ const validators = {
 const errorMessages = {
   login: "Логин должен содержать минимум 3 латинские буквы или цифры",
   password: "Пароль обязателен",
-  fullName: "ФИО должно содержать только кириллицу, пробелы и дефисы",
+  fullName:
+    "ФИО должно содержать минимум 3 слова (фамилия, имя и отчество), только кириллица, пробелы и дефисы",
   email: "Введите корректный email",
   phone: "Введите телефон в формате +7 (XXX) XXX-XX-XX",
   about: "Поле 'О себе' обязательно",
@@ -82,7 +90,7 @@ const errorMessages = {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form");
-  const submitBtn = form.querySelector(".form__submit"); // класс БЭМ кнопки
+  const submitBtn = form.querySelector(".form__submit");
 
   const isFormValid = () =>
     Object.entries(validators).every(([name, test]) => {
@@ -124,6 +132,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (res.ok) {
         renderResult(data);
+        const dialog = document.getElementById("registrationDialog");
+        dialog.close();
         form.reset();
         toggleSubmit();
         return;

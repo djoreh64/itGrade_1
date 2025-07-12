@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import multer from "multer";
 import cors from "cors";
+import bcrypt from "bcrypt";
 import { upload, uploadDir } from "./config/multer";
 import prisma from "./config/prismaClient";
 import { FormFields } from "./types/form";
@@ -32,10 +33,12 @@ app.post(
       return res.status(400).json({ errors: validationErrors });
 
     try {
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+
       const user = await prisma.user.create({
         data: {
           login: data.login,
-          password: data.password,
+          password: hashedPassword,
           fullName: data.fullName,
           email: data.email,
           phone: data.phone,
@@ -48,7 +51,6 @@ app.post(
 
       res.json({
         login: user.login,
-        password: user.password,
         fullName: user.fullName,
         email: user.email,
         phone: user.phone,
@@ -73,7 +75,12 @@ app.post(
 
 app.get("/users", async (req, res) => {
   try {
+    const offset = parseInt(req.query.offset as string) || 0;
+    const limit = parseInt(req.query.limit as string) || 10;
+
     const users = await prisma.user.findMany({
+      skip: offset,
+      take: limit,
       select: {
         id: true,
         login: true,
@@ -85,7 +92,17 @@ app.get("/users", async (req, res) => {
       },
       orderBy: { id: "asc" },
     });
-    res.json(users);
+
+    const totalCount = await prisma.user.count();
+
+    res.json({
+      users,
+      pagination: {
+        total: totalCount,
+        offset,
+        limit,
+      },
+    });
   } catch (error) {
     console.error(error);
     res

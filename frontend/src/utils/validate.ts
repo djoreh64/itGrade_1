@@ -1,3 +1,4 @@
+
 export const validateEmail = (value: string) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailPattern.test(value)) return "Некорректный email";

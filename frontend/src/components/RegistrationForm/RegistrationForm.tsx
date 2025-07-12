@@ -46,7 +46,7 @@ const RegistrationForm: FC = () => {
 
   const registerWithValidation = (fieldName: keyof IFormData) => {
     const rules: Record<keyof IFormData, any> = {
-      login: { required: "Логин обязателен" },
+      login: { required: "Логин обязателен"  },
       email: { required: "Email обязателен", validate: validateEmail },
       phone: { required: "Телефон обязателен", validate: validatePhone },
       password: { required: "Пароль обязателен", validate: validatePassword },

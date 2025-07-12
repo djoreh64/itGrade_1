@@ -1,0 +1,81 @@
+:root {
+  --color-bg: #ffffff;
+  --color-text: #000000;
+  --color-primary: #4eaf50;
+  --color-primary-hover: #218838;
+  --color-error: #dc3545;
+  --color-error-bg: rgba(220, 53, 69, 0.2);
+  --color-success-bg: #f0fff0;
+  --color-success-border: #4eaf50;
+  --color-border: #cccccc;
+  --color-input-bg: #f8f9fa;
+  --color-input-focus: #28a745;
+  --color-disabled-bg: #bdbdbd;
+  --color-backdrop: rgba(0, 0, 0, 0.4);
+  --color-muted: #666;
+  --color-password-toggle: #666;
+
+  --primary-color: #4eaf50;
+  --primary-hover: #218838;
+
+  --input-border: #ccc;
+  --input-bg: #f8f9fa;
+  --input-hover: #28a745;
+
+  --error-color: #dc3545;
+  --error-bg: rgba(220, 53, 69, 0.2);
+
+  --disabled-bg: #bdbdbd;
+
+  --toggle-btn-color: #666;
+
+  --success-bg: #d4edda;
+  --success-text: #155724;
+
+  --dialog-shadow: rgba(0, 0, 0, 0.25);
+  --backdrop-bg: rgba(0, 0, 0, 0.4);
+
+  --bg-color: #ffffff;
+  --text-color: #000000;
+}
+
+[data-theme="dark"] {
+  --color-bg: #121212;
+  --color-text: #f1f1f1;
+  --color-primary: #4dabf7;
+  --color-primary-hover: #339af0;
+  --color-error: #ff6b6b;
+  --color-error-bg: rgba(255, 107, 107, 0.2);
+  --color-success-bg: #1e2e1e;
+  --color-success-border: #74c69d;
+  --color-border: #444;
+  --color-input-bg: #1e1e1e;
+  --color-input-focus: #74c0fc;
+  --color-disabled-bg: #6c757d;
+  --color-backdrop: rgba(255, 255, 255, 0.1);
+  --color-muted: #aaa;
+  --color-password-toggle: #aaa;
+
+  --primary-color: #4dabf7;
+  --primary-hover: #339af0;
+
+  --input-border: #444;
+  --input-bg: #1e1e1e;
+  --input-hover: #74c0fc;
+
+  --error-color: #ff6b6b;
+  --error-bg: rgba(255, 107, 107, 0.2);
+
+  --disabled-bg: #6c757d;
+
+  --toggle-btn-color: #aaa;
+
+  --success-bg: #1e2e1e;
+  --success-text: #d4edda;
+
+  --dialog-shadow: rgba(255, 255, 255, 0.1);
+  --backdrop-bg: rgba(255, 255, 255, 0.1);
+
+  --bg-color: #121212;
+  --text-color: #f1f1f1;
+}

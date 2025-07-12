@@ -8,6 +8,7 @@ import {
 } from "@utils";
 import { useRegistrationForm } from "./hooks/useRegistrationForm";
 import SubmitResult from "@components/SubmitResult";
+import useTheme from "@hooks/useTheme";
 
 const RegistrationForm: FC = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -33,8 +34,13 @@ const RegistrationForm: FC = () => {
 
   const closeDialog = () => dialogRef.current?.close();
 
+  const { toggleTheme } = useTheme();
+
   return (
     <>
+      <button type="button" onClick={toggleTheme} className={styles.openBtn}>
+        ☀️
+      </button>
       <h1>Добро пожаловать на наш сайт</h1>
       <p>Описание для регистрации, пожалуйста, заполните форму</p>
       <button type="button" onClick={openDialog} className={styles.openBtn}>

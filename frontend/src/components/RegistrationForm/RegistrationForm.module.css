@@ -1,9 +1,11 @@
+@import "../../assets/variables.css";
+
 .openBtn {
   padding: 10px 20px;
   font-size: 1rem;
   border-radius: 6px;
   border: none;
-  background-color: #4eaf50;
+  background-color: var(--primary-color);
   color: white;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -11,17 +13,19 @@
 }
 
 .openBtn:hover {
-  background-color: #218838;
+  background-color: var(--primary-hover);
 }
 
 .dialog {
   border: none;
   border-radius: 10px;
   padding: 30px;
-  max-width: 420px;
+  max-width: 600px;
   width: 100%;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 16px var(--dialog-shadow);
   position: relative;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .closeBtn {
@@ -32,16 +36,16 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #666;
+  color: var(--toggle-btn-color);
 }
 
 .form {
-  padding: 30px;
+  padding: 12px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 400px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -58,7 +62,9 @@
 
 .input {
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-color);
   border-radius: 6px;
   font-size: 1rem;
   font-family: inherit;
@@ -72,21 +78,21 @@
 
 .input:hover,
 .input:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 4px 2px rgba(40, 167, 69, 0.2);
+  border-color: var(--input-hover);
+  box-shadow: 0 0 4px 2px var(--error-bg);
   outline: none;
 }
 
 .inputError {
-  border-color: #dc3545;
-  box-shadow: 0 0 4px 2px rgba(220, 53, 69, 0.2);
+  border-color: var(--error-color);
+  box-shadow: 0 0 4px 2px var(--error-bg);
 }
 
 .errorMessage {
-  color: #dc3545;
+  color: var(--error-color);
   font-size: 0.85rem;
-  margin-top: 20px;
-  white-space: "pre-wrap";
+  margin-top: 8px;
+  white-space: pre-wrap;
 }
 
 .textarea {
@@ -96,7 +102,7 @@
 .submitBtn {
   width: 50%;
   padding: 12px;
-  background-color: #4eaf50;
+  background-color: var(--primary-color);
   color: white;
   font-size: 1rem;
   border: none;
@@ -110,13 +116,13 @@
 
 .submitBtn:hover,
 .submitBtn:focus {
-  background-color: #218838;
-  box-shadow: 0 0 10px 3px rgba(33, 136, 56, 0.5);
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 10px 3px var(--error-bg);
   outline: none;
 }
 
 .submitBtn:disabled {
-  background-color: #a5d6a7;
+  background-color: var(--disabled-bg);
   cursor: default;
   box-shadow: none;
 }
@@ -136,18 +142,19 @@
   font-size: 1.2rem;
   padding: 0;
   user-select: none;
+  color: var(--toggle-btn-color);
 }
 
 .result {
   max-width: 420px;
   margin: 0 auto;
-  background: #d4edda;
-  color: #155724;
+  background: var(--success-bg);
+  color: var(--success-text);
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 4px 8px var(--dialog-shadow);
 }
 
 ::backdrop {
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--backdrop-bg);
 }

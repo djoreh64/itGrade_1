@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import path from "path";
 import { upload, uploadDir } from "./config/multer";
 import { FormFields } from "./types/form";
-import { renderResult, validateFormData } from "./utils";
+import { validateFormData } from "./utils";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -18,7 +18,10 @@ app.post("/submit", upload.single("avatar"), (req: Request, res: Response) => {
     return res.status(400).send("Ошибка: обязательные поля не заполнены");
 
   res.setHeader("Content-Type", "text/html; charset=utf-8");
-  res.send(renderResult(data, file));
+  res.json({
+    ...data,
+    avatarUrl: file ? `/uploads/${file.filename}` : null,
+  });
 });
 
 app.listen(PORT, () =>

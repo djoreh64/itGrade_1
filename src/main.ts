@@ -1,8 +1,9 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import path from "path";
 import { upload, uploadDir } from "./config/multer";
 import { FormFields } from "./types/form";
 import { logFormSubmission, validateFormData } from "./utils";
+import multer from "multer";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -12,21 +13,24 @@ app.use("/uploads", express.static(uploadDir));
 
 app.post(
   "/submit",
-  upload.single("avatar"),
-  async (req: Request, res: Response) => {
+  (req, res, next) => {
+    upload.single("avatar")(req, res, (err) => {
+      if (err instanceof multer.MulterError || err instanceof Error)
+        return res.status(400).json({ errors: { avatar: err.message } });
+
+      next();
+    });
+  },
+  async (req, res) => {
     const data = req.body as FormFields;
     const file = req.file;
 
-    const errors = validateFormData(data);
-    if (Object.keys(errors).length > 0) return res.status(400).json({ errors });
+    const validationErrors = validateFormData(data);
+    if (Object.keys(validationErrors).length > 0)
+      return res.status(400).json({ errors: validationErrors });
 
-    try {
-      await logFormSubmission(data, file?.filename);
-    } catch (err) {
-      console.error("Ошибка:", err);
-    }
+    await logFormSubmission(data, file?.filename);
 
-    res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.json({
       ...data,
       avatarUrl: file ? `/uploads/${file.filename}` : null,

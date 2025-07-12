@@ -15,7 +15,9 @@ export const validateFormData = (data: FormFields): Record<string, string> => {
   const errors: Record<string, string> = {};
 
   const loginRegex = /^[a-zA-Z0-9]{3,}$/;
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&\-])[A-Za-z\d@$!%*?&\-]{8,}$/;
+
   const fullNameRegex = /^[А-Яа-яЁё\s\-]{3,}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
@@ -27,7 +29,7 @@ export const validateFormData = (data: FormFields): Record<string, string> => {
   if (!data.password?.trim()) errors.password = "Пароль обязателен";
   else if (!passwordRegex.test(data.password))
     errors.password =
-      "Пароль должен содержать минимум 8 символов, одну заглавную букву и одну цифру";
+      "Пароль должен содержать минимум 8 символов, одну заглавную букву, одну строчную букву, одну цифру и один спецсимвол";
 
   if (!data.fullName?.trim()) errors.fullName = "ФИО обязательно";
   else if (!fullNameRegex.test(data.fullName))

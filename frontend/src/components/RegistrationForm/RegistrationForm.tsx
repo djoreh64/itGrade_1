@@ -6,6 +6,13 @@ import useTheme from "@hooks/useTheme";
 import ThemeSwitcher from "@components/ThemeSwitcher";
 import InputField from "@components/InputField/InputField";
 import PasswordField from "@components/PasswordField/PasswordField";
+import type { IFormData } from "@types";
+import {
+  validateEmail,
+  validateFullName,
+  validatePassword,
+  validatePhone,
+} from "@utils/validate";
 
 const RegistrationForm: FC = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -33,8 +40,23 @@ const RegistrationForm: FC = () => {
   const closeDialog = () => dialogRef.current?.close();
 
   const { label, setTheme } = useTheme();
+  const { ref: avatarRef, onChange: rhfOnChange, ...rest } = register("avatar");
 
   const passwordValue = watch("password");
+
+  const registerWithValidation = (fieldName: keyof IFormData) => {
+    const rules: Record<keyof IFormData, any> = {
+      login: { required: "Логин обязателен" },
+      email: { required: "Email обязателен", validate: validateEmail },
+      phone: { required: "Телефон обязателен", validate: validatePhone },
+      password: { required: "Пароль обязателен", validate: validatePassword },
+      fullName: { required: "ФИО обязательно", validate: validateFullName },
+      about: { required: "О себе обязательно" },
+      avatar: { required: "Аватар обязателен" },
+    };
+
+    return register(fieldName, rules[fieldName]);
+  };
 
   return (
     <>
@@ -65,13 +87,13 @@ const RegistrationForm: FC = () => {
           <InputField
             id="login"
             label="Логин"
-            register={register}
+            register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
           />
 
           <PasswordField
-            register={register}
+            register={registerWithValidation}
             errors={errors}
             isSubmitting={isSubmitting}
             showPassword={showPassword}
@@ -82,7 +104,7 @@ const RegistrationForm: FC = () => {
           <InputField
             id="fullName"
             label="Ф.И.О."
-            register={register}
+            register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
           />
@@ -91,7 +113,7 @@ const RegistrationForm: FC = () => {
             id="email"
             label="E-Mail"
             type="email"
-            register={register}
+            register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
           />
@@ -100,7 +122,7 @@ const RegistrationForm: FC = () => {
             id="phone"
             label="Телефон"
             type="tel"
-            register={register}
+            register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
             placeholder="+7 (___) ___-__-__"
@@ -111,36 +133,35 @@ const RegistrationForm: FC = () => {
             label="О себе"
             textarea
             rows={3}
-            register={register}
+            register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
           />
 
           <div className={styles.group}>
-            <label htmlFor="avatar" className={styles.label}>
-              Аватар
-            </label>
-            <input
-              id="avatar"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              {...register("avatar")}
-              className={styles.input}
-              disabled={isSubmitting}
-              onChange={(e) => onAvatarChange(e.target.files)}
-            />
-            {avatarPreview && (
-              <img
-                src={avatarPreview}
-                alt="Превью аватара"
-                style={{
-                  marginTop: 10,
-                  maxWidth: 150,
-                  maxHeight: 150,
-                  borderRadius: 6,
-                }}
-              />
-            )}
+            <label className={styles.label}>Аватар</label>
+            <div className={styles.fileInputWrapper}>
+              {avatarPreview && (
+                <img
+                  src={avatarPreview}
+                  alt="Превью аватара"
+                  className={styles.avatarPreview}
+                />
+              )}
+              <label className={styles.customFileInput}>
+                Выбрать файл
+                <input
+                  type="file"
+                  className={styles.fileInput}
+                  ref={avatarRef}
+                  onChange={(e) => {
+                    rhfOnChange(e);
+                    onAvatarChange(e.target.files);
+                  }}
+                  {...rest}
+                />
+              </label>
+            </div>
           </div>
 
           <button

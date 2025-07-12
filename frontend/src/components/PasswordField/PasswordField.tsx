@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 import { usePasswordStrength } from "@hooks/usePasswordStrength";
-import { validatePassword } from "@utils";
+import { validatePassword } from "@utils/validate";
 
 interface Props {
   register: any;

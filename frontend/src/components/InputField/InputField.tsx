@@ -27,7 +27,6 @@ const InputField: FC<Props> = ({
   onChange,
 }) => {
   const { onChange: rhfOnChange, onBlur: rhfOnBlur, ref, name } = register(id);
-
   const handleChange = (e: React.ChangeEvent<any>) => {
     rhfOnChange(e);
     if (onChange) onChange(e);

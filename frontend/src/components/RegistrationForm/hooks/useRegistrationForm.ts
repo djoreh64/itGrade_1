@@ -26,6 +26,8 @@ export const useRegistrationForm = (
     setError,
   } = useForm<IFormData>({
     mode: "onBlur",
+    reValidateMode: "onBlur",
+    shouldUnregister: false,
     defaultValues: {
       login: "",
       password: "",

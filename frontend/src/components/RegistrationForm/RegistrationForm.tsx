@@ -47,8 +47,6 @@ const RegistrationForm: FC = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { onChange: rhfOnChange, ...avatarRegister } = register("avatar");
 
-  const passwordValue = watch("password");
-
   const registerWithValidation = (fieldName: keyof IFormData) => {
     const rules: Record<keyof IFormData, any> = {
       login: { required: t("loginRequired") },
@@ -64,6 +62,12 @@ const RegistrationForm: FC = () => {
   };
 
   const file = watch("avatar")?.[0];
+  const passwordValue = watch("password");
+  const aboutValue = watch("about") || "";
+
+  const maxAboutLength = 500;
+  const remainingChars = maxAboutLength - aboutValue.length;
+  const aboutPercent = (aboutValue.length / maxAboutLength) * 100;
 
   return (
     <>
@@ -144,7 +148,22 @@ const RegistrationForm: FC = () => {
             register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
+            maxLength={500}
           />
+
+          <div className={styles.aboutProgressWrapper}>
+            <div className={styles.aboutProgressBar}>
+              <div
+                className={styles.aboutProgress}
+                style={{ width: `${aboutPercent}%` }}
+              />
+            </div>
+            <p className={styles.aboutCharCount}>
+              {t("remainingChars", {
+                count: remainingChars > 0 ? remainingChars : 0,
+              })}
+            </p>
+          </div>
 
           <div className={styles.group}>
             <label htmlFor="avatar" className={styles.label}>

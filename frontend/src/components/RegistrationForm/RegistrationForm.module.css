@@ -356,3 +356,29 @@ dialog,
   justify-content: flex-start;
   padding: 1rem;
 }
+
+.aboutProgressWrapper {
+  margin-top: 4px;
+  margin-bottom: 20px;
+}
+
+.aboutProgressBar {
+  width: 100%;
+  height: 6px;
+  background-color: #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.aboutProgress {
+  height: 100%;
+  background-color: #4caf50; 
+  transition: width 0.3s ease;
+}
+
+.aboutCharCount {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 4px;
+  user-select: none;
+}

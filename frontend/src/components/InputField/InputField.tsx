@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 
-interface Props {
+interface Props extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   id: string;
   label: string;
   register: any;
@@ -25,6 +25,7 @@ const InputField: FC<Props> = ({
   textarea = false,
   rows,
   onChange,
+  ...props
 }) => {
   const { onChange: rhfOnChange, onBlur: rhfOnBlur, ref, name } = register(id);
   const handleChange = (e: React.ChangeEvent<any>) => {
@@ -50,6 +51,7 @@ const InputField: FC<Props> = ({
           }`}
           disabled={disabled}
           placeholder={placeholder}
+          {...props}
         />
         {errors[id] && (
           <div className={styles.errorMessage}>{errors[id]?.message}</div>
@@ -74,6 +76,7 @@ const InputField: FC<Props> = ({
         disabled={disabled}
         placeholder={placeholder}
         autoComplete={id === "password" ? "new-password" : undefined}
+        {...props}
       />
       {errors[id] && (
         <div className={styles.errorMessage}>{errors[id]?.message}</div>

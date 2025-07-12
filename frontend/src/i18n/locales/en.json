@@ -46,5 +46,6 @@
   "previousPage": "Previous page",
   "nextPage": "Next page",
   "page": "Page",
-  "of": "of"
+  "of": "of",
+  "remainingChars": "Characters left: {{count}}"
 }

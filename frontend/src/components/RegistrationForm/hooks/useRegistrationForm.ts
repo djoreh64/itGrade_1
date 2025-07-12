@@ -110,6 +110,30 @@ export const useRegistrationForm = (
     }
   };
 
+  const STORAGE_KEY = "registrationFormData";
+
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        Object.entries(parsed).forEach(([key, value]) => {
+          if (key !== "avatar") {
+            reset((formValues) => ({ ...formValues, [key]: value }));
+          }
+        });
+      } catch {}
+    }
+  }, [reset]);
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      const { avatar, ...rest } = value;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(rest));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
   return {
     register,
     handleSubmit,

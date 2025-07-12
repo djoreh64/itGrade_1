@@ -7,6 +7,7 @@ import { upload, uploadDir } from "./config/multer";
 import prisma from "./config/prismaClient";
 import { FormFields } from "./types/form";
 import { logFormSubmission, validateFormData } from "./utils";
+import { sendWelcomeEmail } from "./config/emailService";
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -46,6 +47,12 @@ app.post(
           avatarUrl: file ? `/uploads/${file.filename}` : null,
         },
       });
+
+      try {
+        await sendWelcomeEmail(user.email, user.fullName);
+      } catch (emailError) {
+        console.error("Ошибка при отправке письма:", emailError);
+      }
 
       await logFormSubmission(data, file?.filename);
 

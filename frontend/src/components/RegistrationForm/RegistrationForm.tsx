@@ -1,24 +1,19 @@
+import AvatarPreview from "@components/AvatarPreview";
+import InputField from "@components/InputField/InputField";
+import LanguageSwitcher from "@components/LanguageSwitcher";
+import PasswordField from "@components/PasswordField/PasswordField";
+import SubmitResult from "@components/SubmitResult";
+import ThemeSwitcher from "@components/ThemeSwitcher";
+import { VALIDATION_RULES } from "@constants";
+import useTheme from "@hooks/useTheme";
+import type { IFormData } from "@types";
+import { t } from "i18next";
 import { useRef, type FC } from "react";
 import styles from "./RegistrationForm.module.css";
 import { useRegistrationForm } from "./hooks/useRegistrationForm";
-import SubmitResult from "@components/SubmitResult";
-import useTheme from "@hooks/useTheme";
-import ThemeSwitcher from "@components/ThemeSwitcher";
-import InputField from "@components/InputField/InputField";
-import PasswordField from "@components/PasswordField/PasswordField";
-import type { IFormData } from "@types";
-import {
-  validateEmail,
-  validateFullName,
-  validatePassword,
-  validatePhone,
-} from "@utils/validate";
-import LanguageSwitcher from "@components/LanguageSwitcher";
-import { useTranslation } from "react-i18next";
 
 const RegistrationForm: FC = () => {
-  const { t } = useTranslation();
-
+  const { label, setTheme } = useTheme();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const {
     register,
@@ -44,23 +39,28 @@ const RegistrationForm: FC = () => {
 
   const closeDialog = () => dialogRef.current?.close();
 
-  const { label, setTheme } = useTheme();
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      rhfOnChange({ target: { files } });
+      onAvatarChange(files);
+    }
+  };
+
+  const handleDropzoneClick = () => inputRef.current?.click();
+
+  const handleDropzoneKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      inputRef.current?.click();
+    }
+  };
+
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { onChange: rhfOnChange, ...avatarRegister } = register("avatar");
 
-  const registerWithValidation = (fieldName: keyof IFormData) => {
-    const rules: Record<keyof IFormData, any> = {
-      login: { required: t("loginRequired") },
-      email: { required: t("emailRequired"), validate: validateEmail },
-      phone: { required: t("phoneRequired"), validate: validatePhone },
-      password: { required: t("passwordRequired"), validate: validatePassword },
-      fullName: { required: t("fullNameRequired"), validate: validateFullName },
-      about: { required: t("aboutRequired") },
-      avatar: { required: t("avatarRequired") },
-    };
-
-    return register(fieldName, rules[fieldName]);
-  };
+  const registerWithValidation = (fieldName: keyof IFormData) =>
+    register(fieldName, VALIDATION_RULES[fieldName]);
 
   const file = watch("avatar")?.[0];
   const passwordValue = watch("password");
@@ -172,23 +172,13 @@ const RegistrationForm: FC = () => {
             </label>
 
             <div
-              className={styles.dropzone}
               role="button"
+              className={styles.dropzone}
               tabIndex={0}
-              onClick={() => inputRef.current?.click()}
-              onKeyDown={(e) =>
-                (e.key === "Enter" || e.key === " ") &&
-                inputRef.current?.click()
-              }
+              onClick={handleDropzoneClick}
+              onKeyDown={handleDropzoneKeyDown}
               onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                  rhfOnChange({ target: { files } });
-                  onAvatarChange(files);
-                }
-              }}
+              onDrop={handleDrop}
             >
               <div className={styles.dropzoneContent}>
                 <p>{t("dragDropFile")}</p>
@@ -228,13 +218,7 @@ const RegistrationForm: FC = () => {
               )}
             </div>
 
-            {avatarPreview && (
-              <img
-                src={avatarPreview}
-                alt={t("avatarPreviewAlt")}
-                className={styles.avatarPreview}
-              />
-            )}
+            <AvatarPreview src={avatarPreview} />
           </div>
 
           <button

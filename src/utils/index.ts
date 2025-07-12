@@ -1,3 +1,5 @@
+import path from "path";
+import fs from "fs";
 import { FormFields } from "../types/form";
 
 export const escapeHtml = (text: string): string => {
@@ -43,4 +45,25 @@ export const renderResult = (
     </ul>
     <a href="/">← Назад</a>
   `;
+};
+
+export const logFormSubmission = async (
+  data: FormFields,
+  fileName?: string
+): Promise<void> => {
+  const timestamp = new Date().toISOString();
+  const logEntry = {
+    timestamp,
+    data,
+    avatar: fileName ?? null,
+  };
+  const logFilePath = path.resolve(
+    __dirname,
+    "../../logs/debug.log"
+  );
+
+  const logLine = JSON.stringify(logEntry) + "\n";
+
+  await fs.promises.mkdir(path.dirname(logFilePath), { recursive: true });
+  await fs.promises.appendFile(logFilePath, logLine, "utf8");
 };

@@ -40,13 +40,14 @@ const RegistrationForm: FC = () => {
   const closeDialog = () => dialogRef.current?.close();
 
   const { label, setTheme } = useTheme();
-  const { ref: avatarRef, onChange: rhfOnChange, ...rest } = register("avatar");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { onChange: rhfOnChange, ...avatarRegister } = register("avatar");
 
   const passwordValue = watch("password");
 
   const registerWithValidation = (fieldName: keyof IFormData) => {
     const rules: Record<keyof IFormData, any> = {
-      login: { required: "Логин обязателен"  },
+      login: { required: "Логин обязателен" },
       email: { required: "Email обязателен", validate: validateEmail },
       phone: { required: "Телефон обязателен", validate: validatePhone },
       password: { required: "Пароль обязателен", validate: validatePassword },
@@ -57,6 +58,8 @@ const RegistrationForm: FC = () => {
 
     return register(fieldName, rules[fieldName]);
   };
+
+  const file = watch("avatar")?.[0];
 
   return (
     <>
@@ -139,29 +142,68 @@ const RegistrationForm: FC = () => {
           />
 
           <div className={styles.group}>
-            <label className={styles.label}>Аватар</label>
-            <div className={styles.fileInputWrapper}>
-              {avatarPreview && (
-                <img
-                  src={avatarPreview}
-                  alt="Превью аватара"
-                  className={styles.avatarPreview}
-                />
-              )}
-              <label className={styles.customFileInput}>
-                Выбрать файл
-                <input
-                  type="file"
-                  className={styles.fileInput}
-                  ref={avatarRef}
-                  onChange={(e) => {
-                    rhfOnChange(e);
-                    onAvatarChange(e.target.files);
+            <label htmlFor="avatar" className={styles.label}>
+              Аватар
+            </label>
+
+            <div
+              className={styles.dropzone}
+              role="button"
+              tabIndex={0}
+              onClick={() => inputRef.current?.click()}
+              onKeyDown={(e) =>
+                (e.key === "Enter" || e.key === " ") &&
+                inputRef.current?.click()
+              }
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                  rhfOnChange({ target: { files } });
+                  onAvatarChange(files);
+                }
+              }}
+            >
+              <div className={styles.dropzoneContent}>
+                <p>Перетащите файл сюда или</p>
+                <button
+                  type="button"
+                  className={styles.chooseBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    inputRef.current?.click();
                   }}
-                  {...rest}
-                />
-              </label>
+                >
+                  Выбрать файл
+                </button>
+                {file && <span className={styles.fileName}>{file.name}</span>}
+              </div>
+
+              <input
+                type="file"
+                accept="image/*"
+                name="avatar"
+                className={styles.hiddenInput}
+                ref={(el) => {
+                  inputRef.current = el;
+                  avatarRegister.ref(el);
+                }}
+                onBlur={avatarRegister.onBlur}
+                onChange={(e) => {
+                  rhfOnChange(e);
+                  onAvatarChange(e.target.files);
+                }}
+              />
             </div>
+
+            {avatarPreview && (
+              <img
+                src={avatarPreview}
+                alt="Превью аватара"
+                className={styles.avatarPreview}
+              />
+            )}
           </div>
 
           <button

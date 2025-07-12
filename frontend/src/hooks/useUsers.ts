@@ -32,6 +32,7 @@ export const useUsers = (offset: number, limit: number) =>
       if (!res.ok) throw new Error("Ошибка при загрузке пользователей");
       return res.json();
     },
+    staleTime: 60 * 1000,
   });
 
 export const useUsersActions = () => {

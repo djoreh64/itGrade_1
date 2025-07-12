@@ -11,27 +11,30 @@ interface Props {
 
 const ThemeSwitcher: FC<Props> = ({ setTheme, label }) => (
   <div className={styles.themeSwitcher}>
-    <button
-      type="button"
-      onClick={() => setTheme("light")}
-      className={styles.openBtn}
-    >
-      🌞 Светлая
-    </button>
-    <button
-      type="button"
-      onClick={() => setTheme("dark")}
-      className={styles.openBtn}
-    >
-      🌙 Тёмная
-    </button>
-    <button
-      type="button"
-      onClick={() => setTheme("system")}
-      className={styles.openBtn}
-    >
-      🖥️ Системная
-    </button>
+    <div>
+      <button
+        type="button"
+        onClick={() => setTheme("light")}
+        className={styles.openBtn}
+      >
+        🌞 Светлая
+      </button>
+      <button
+        type="button"
+        onClick={() => setTheme("dark")}
+        className={styles.openBtn}
+      >
+        🌙 Тёмная
+      </button>
+      <button
+        type="button"
+        onClick={() => setTheme("system")}
+        className={styles.openBtn}
+      >
+        🖥️ Системная
+      </button>
+    </div>
+
     <p>
       Текущая тема: <strong>{label}</strong>
     </p>

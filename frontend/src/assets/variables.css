@@ -20,7 +20,7 @@
 
   --input-border: #ccc;
   --input-bg: #f8f9fa;
-  --input-hover: #28a745;
+  --input-hover: #28a74550;
 
   --error-color: #dc3545;
   --error-bg: rgba(220, 53, 69, 0.2);

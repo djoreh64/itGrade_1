@@ -9,6 +9,17 @@ export const escapeHtml = (text: string): string => {
     .replace(/'/g, "&#039;");
 };
 
+export const validateFormData = (data: FormFields): boolean => {
+  return Boolean(
+    data.login?.trim() &&
+      data.password?.trim() &&
+      data.fullName?.trim() &&
+      data.email?.trim() &&
+      data.phone?.trim() &&
+      data.about?.trim()
+  );
+};
+
 export const renderResult = (
   data: FormFields,
   file?: Express.Multer.File

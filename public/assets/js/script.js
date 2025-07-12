@@ -142,3 +142,50 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", onSubmit);
   toggleSubmit();
 });
+
+const phoneInput = document.getElementById("phone");
+
+const formatPhone = (value) => {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  const parts = [
+    "+7",
+    digits.slice(1, 4),
+    digits.slice(4, 7),
+    digits.slice(7, 9),
+    digits.slice(9, 11),
+  ];
+
+  let result = parts[0];
+  if (parts[1]) result += ` (${parts[1]}`;
+  if (parts[1] && parts[1].length === 3) result += `)`;
+  if (parts[2]) result += ` ${parts[2]}`;
+  if (parts[3]) result += `-${parts[3]}`;
+  if (parts[4]) result += `-${parts[4]}`;
+
+  return result;
+};
+
+phoneInput.addEventListener("input", (e) => {
+  const cursor = phoneInput.selectionStart;
+  const oldLength = phoneInput.value.length;
+
+  phoneInput.value = formatPhone(phoneInput.value);
+
+  const newLength = phoneInput.value.length;
+  phoneInput.setSelectionRange(
+    cursor + (newLength - oldLength),
+    cursor + (newLength - oldLength)
+  );
+});
+
+phoneInput.addEventListener("focus", () => {
+  if (phoneInput.value.trim() === "") {
+    phoneInput.value = "+7 ";
+  }
+});
+
+phoneInput.addEventListener("blur", () => {
+  if (phoneInput.value.replace(/\D/g, "").length < 11) {
+    phoneInput.value = "";
+  }
+});

@@ -1,25 +1,35 @@
 const clearErrors = () => {
-  document.querySelectorAll(".error-message").forEach((el) => el.remove());
   document
-    .querySelectorAll(".error")
-    .forEach((el) => el.classList.remove("error"));
+    .querySelectorAll(".form__error-message")
+    .forEach((el) => el.remove());
+  document
+    .querySelectorAll(".form__input--error")
+    .forEach((el) => el.classList.remove("form__input--error"));
 };
 
 const showError = (input, message) => {
   if (!input) return;
 
-  input.classList.add("error");
+  input.classList.add("form__input--error");
 
-  const err = document.createElement("div");
-  err.className = "error-message";
-  err.textContent = message;
+  const fieldContainer = input.closest(".form__group, .form__field");
+  if (!fieldContainer) return;
 
-  input.parentNode.appendChild(err);
+  const oldError = fieldContainer.querySelector(".form__error-message");
+  if (oldError) oldError.remove();
+
+  const errorEl = document.createElement("div");
+  errorEl.className = "form__error-message";
+  errorEl.textContent = message;
+
+  fieldContainer.appendChild(errorEl);
 };
 
 const removeError = (input) => {
-  input.classList.remove("error");
-  const errMsg = input.parentNode.querySelector(".error-message");
+  input.classList.remove("form__input--error");
+  const fieldContainer = input.closest(".form__group, .form__field");
+  if (!fieldContainer) return;
+  const errMsg = fieldContainer.querySelector(".form__error-message");
   if (errMsg) errMsg.remove();
 };
 
@@ -72,7 +82,7 @@ const errorMessages = {
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form");
-  const submitBtn = form.querySelector("button");
+  const submitBtn = form.querySelector(".form__submit"); // класс БЭМ кнопки
 
   const isFormValid = () =>
     Object.entries(validators).every(([name, test]) => {
@@ -80,16 +90,20 @@ document.addEventListener("DOMContentLoaded", () => {
       return input && test(input.value);
     });
 
-  const toggleSubmit = () => (submitBtn.disabled = !isFormValid());
+  const toggleSubmit = () => {
+    submitBtn.disabled = !isFormValid();
+  };
 
   const validateField = (input) => {
     const name = input.name;
     const validator = validators[name];
     if (!validator) return;
 
-    removeError(input);
-
-    if (!validator(input.value)) showError(input, errorMessages[name]);
+    if (validator(input.value)) {
+      removeError(input);
+    } else {
+      showError(input, errorMessages[name]);
+    }
   };
 
   const onSubmit = async (e) => {
@@ -141,6 +155,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   form.addEventListener("submit", onSubmit);
   toggleSubmit();
+
+  const passwordInput = document.getElementById("password");
+  const toggleBtn = document.querySelector(".form__toggle-password");
+
+  toggleBtn.addEventListener("click", () => {
+    const isVisible = passwordInput.type === "text";
+    passwordInput.type = isVisible ? "password" : "text";
+    toggleBtn.textContent = isVisible ? "👁" : "🙈";
+    toggleBtn.setAttribute(
+      "aria-label",
+      isVisible ? "Показать пароль" : "Скрыть пароль"
+    );
+
+    validateField(passwordInput);
+  });
 });
 
 const phoneInput = document.getElementById("phone");
@@ -179,13 +208,9 @@ phoneInput.addEventListener("input", (e) => {
 });
 
 phoneInput.addEventListener("focus", () => {
-  if (phoneInput.value.trim() === "") {
-    phoneInput.value = "+7 ";
-  }
+  if (phoneInput.value.trim() === "") phoneInput.value = "+7 ";
 });
 
 phoneInput.addEventListener("blur", () => {
-  if (phoneInput.value.replace(/\D/g, "").length < 11) {
-    phoneInput.value = "";
-  }
+  if (phoneInput.value.replace(/\D/g, "").length < 11) phoneInput.value = "";
 });

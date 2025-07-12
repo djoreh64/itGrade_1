@@ -11,15 +11,36 @@ export const escapeHtml = (text: string): string => {
     .replace(/'/g, "&#039;");
 };
 
-export const validateFormData = (data: FormFields): boolean => {
-  return Boolean(
-    data.login?.trim() &&
-      data.password?.trim() &&
-      data.fullName?.trim() &&
-      data.email?.trim() &&
-      data.phone?.trim() &&
-      data.about?.trim()
-  );
+export const validateFormData = (data: FormFields): Record<string, string> => {
+  const errors: Record<string, string> = {};
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\+7\s?\(?\d{3}\)?\s?\d{3}-?\d{2}-?\d{2}$/;
+  const fullNameRegex = /^[А-Яа-яЁё\s\-]+$/;
+  const loginRegex = /^[a-zA-Z0-9]{3,}$/;
+
+  if (!data.login?.trim()) errors.login = "Логин обязателен";
+  else if (!loginRegex.test(data.login))
+    errors.login =
+      "Логин должен содержать только латинские буквы и цифры (минимум 3 символа)";
+
+  if (!data.password?.trim()) errors.password = "Пароль обязателен";
+
+  if (!data.fullName?.trim()) errors.fullName = "Ф.И.О. обязательно";
+  else if (!fullNameRegex.test(data.fullName))
+    errors.fullName = "Ф.И.О. должно содержать только буквы и пробелы";
+
+  if (!data.email?.trim()) errors.email = "Email обязателен";
+  else if (!emailRegex.test(data.email))
+    errors.email = "Некорректный формат email";
+
+  if (!data.phone?.trim()) errors.phone = "Телефон обязателен";
+  else if (!phoneRegex.test(data.phone))
+    errors.phone = "Телефон должен быть в формате +7 (999) 123-45-67";
+
+  if (!data.about?.trim()) errors.about = "Поле «О себе» обязательно";
+
+  return errors;
 };
 
 export const renderResult = (
@@ -57,10 +78,7 @@ export const logFormSubmission = async (
     data,
     avatar: fileName ?? null,
   };
-  const logFilePath = path.resolve(
-    __dirname,
-    "../../logs/debug.log"
-  );
+  const logFilePath = path.resolve(__dirname, "../../logs/debug.log");
 
   const logLine = JSON.stringify(logEntry) + "\n";
 

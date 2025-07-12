@@ -11,32 +11,32 @@
     <form action="/submit" method="post" enctype="multipart/form-data">
       <div>
         <label for="login">Логин</label>
-        <input type="text" id="login" name="login" required />
+        <input type="text" id="login" name="login" />
       </div>
 
       <div>
         <label for="password">Пароль</label>
-        <input type="text" id="password" name="password" required />
+        <input type="text" id="password" name="password" />
       </div>
 
       <div>
         <label for="fullName">Ф.И.О.</label>
-        <input type="text" id="fullName" name="fullName" required />
+        <input type="text" id="fullName" name="fullName" />
       </div>
 
       <div>
         <label for="email">E-Mail</label>
-        <input type="text" id="email" name="email" required />
+        <input type="text" id="email" name="email" />
       </div>
 
       <div>
         <label for="phone">Телефон</label>
-        <input type="text" id="phone" name="phone" required />
+        <input type="text" id="phone" name="phone" />
       </div>
 
       <div>
         <label for="about">О себе</label>
-        <textarea id="about" name="about" rows="3" required></textarea>
+        <textarea id="about" name="about" rows="3"></textarea>
       </div>
 
       <div>
@@ -46,6 +46,7 @@
 
       <button type="submit">Отправить</button>
     </form>
+    <div id="result"></div>
     <script src="./assets/js/script.js"></script>
   </body>
 </html>

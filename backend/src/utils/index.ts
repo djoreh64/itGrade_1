@@ -14,21 +14,24 @@ export const escapeHtml = (text: string): string => {
 export const validateFormData = (data: FormFields): Record<string, string> => {
   const errors: Record<string, string> = {};
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^\+7\s?\(?\d{3}\)?\s?\d{3}-?\d{2}-?\d{2}$/;
-  const fullNameRegex = /^[А-Яа-яЁё\s\-]+$/;
   const loginRegex = /^[a-zA-Z0-9]{3,}$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+  const fullNameRegex = /^[А-Яа-яЁё\s\-]{3,}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^\+7\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$/;
 
   if (!data.login?.trim()) errors.login = "Логин обязателен";
   else if (!loginRegex.test(data.login))
-    errors.login =
-      "Логин должен содержать только латинские буквы и цифры (минимум 3 символа)";
+    errors.login = "Минимум 3 латинские буквы или цифры";
 
   if (!data.password?.trim()) errors.password = "Пароль обязателен";
+  else if (!passwordRegex.test(data.password))
+    errors.password =
+      "Пароль должен содержать минимум 8 символов, одну заглавную букву и одну цифру";
 
-  if (!data.fullName?.trim()) errors.fullName = "Ф.И.О. обязательно";
+  if (!data.fullName?.trim()) errors.fullName = "ФИО обязательно";
   else if (!fullNameRegex.test(data.fullName))
-    errors.fullName = "Ф.И.О. должно содержать только буквы и пробелы";
+    errors.fullName = "Ф.И.О. должно содержать минимум 3 буквы кириллицей";
 
   if (!data.email?.trim()) errors.email = "Email обязателен";
   else if (!emailRegex.test(data.email))
@@ -38,7 +41,7 @@ export const validateFormData = (data: FormFields): Record<string, string> => {
   else if (!phoneRegex.test(data.phone))
     errors.phone = "Телефон должен быть в формате +7 (999) 123-45-67";
 
-  if (!data.about?.trim()) errors.about = "Поле «О себе» обязательно";
+  if (!data.about?.trim()) errors.about = "Поле обязательно";
 
   return errors;
 };

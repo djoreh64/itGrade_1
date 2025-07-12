@@ -21,6 +21,8 @@
   "homepage": "https://github.com/djoreh64/itGrade_1#readme",
   "dependencies": {
     "@prisma/client": "^6.11.1",
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "multer": "^2.0.1"
   },

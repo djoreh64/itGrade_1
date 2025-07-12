@@ -1,0 +1,153 @@
+.openBtn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #4eaf50;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.openBtn:hover {
+  background-color: #218838;
+}
+
+.dialog {
+  border: none;
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.form {
+  padding: 30px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  width: 100%;
+  height: 40px;
+  resize: vertical;
+  min-height: 40px;
+  line-height: 1.2;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.input:hover,
+.input:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 4px 2px rgba(40, 167, 69, 0.2);
+  outline: none;
+}
+
+.inputError {
+  border-color: #dc3545;
+  box-shadow: 0 0 4px 2px rgba(220, 53, 69, 0.2);
+}
+
+.errorMessage {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 20px;
+  white-space: "pre-wrap";
+}
+
+.textarea {
+  height: auto;
+}
+
+.submitBtn {
+  width: 50%;
+  padding: 12px;
+  background-color: #4eaf50;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.3s ease,
+    border-color 0.3s ease;
+  align-self: center;
+  height: 40px;
+}
+
+.submitBtn:hover,
+.submitBtn:focus {
+  background-color: #218838;
+  box-shadow: 0 0 10px 3px rgba(33, 136, 56, 0.5);
+  outline: none;
+}
+
+.submitBtn:disabled {
+  background-color: #a5d6a7;
+  cursor: default;
+  box-shadow: none;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.togglePasswordBtn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  user-select: none;
+}
+
+.result {
+  max-width: 420px;
+  margin: 0 auto;
+  background: #d4edda;
+  color: #155724;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+}
+
+::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}

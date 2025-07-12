@@ -97,6 +97,7 @@ export const useRegistrationForm = (
             const response = JSON.parse(xhr.responseText);
             setSubmitResult({ success: true, data: response });
             reset();
+            localStorage.removeItem(STORAGE_KEY);
             setAvatarPreview(null);
             dialogRef?.current?.close();
             invalidate();
@@ -127,7 +128,7 @@ export const useRegistrationForm = (
 
         xhr.send(fd);
       });
-    } catch (err) {
+    } catch {
       setSubmitResult({
         success: false,
         errors: { global: "Ошибка при отправке формы" },
@@ -142,11 +143,9 @@ export const useRegistrationForm = (
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
-        Object.entries(parsed).forEach(([key, value]) => {
-          if (key !== "avatar") {
-            reset((formValues) => ({ ...formValues, [key]: value }));
-          }
-        });
+        const dataToRestore = { ...parsed };
+        delete dataToRestore.avatar;
+        reset(dataToRestore);
       } catch {}
     }
   }, [reset]);

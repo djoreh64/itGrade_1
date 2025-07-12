@@ -13,35 +13,37 @@ interface Props {
 
 const SubmitResult: FC<Props> = ({ submitResult }) => {
   const { t } = useTranslation();
+  const { login, password, fullName, email, phone, about, avatarUrl } =
+    submitResult.data.user;
 
   return (
-    <div className={styles.result} style={{ marginTop: 20 }}>
+    <div className={styles.result}>
       <h2>{t("dataSuccessfullySent")}:</h2>
       <ul>
         <li>
-          <b>{t("login")}:</b> {submitResult.data.login}
+          <b>{t("login")}:</b> {login}
         </li>
         <li>
-          <b>{t("password")}:</b> {submitResult.data.password}
+          <b>{t("password")}:</b> {password}
         </li>
         <li>
-          <b>{t("fullName")}:</b> {submitResult.data.fullName}
+          <b>{t("fullName")}:</b> {fullName}
         </li>
         <li>
-          <b>{t("email")}:</b> {submitResult.data.email}
+          <b>{t("email")}:</b> {email}
         </li>
         <li>
-          <b>{t("phone")}:</b> {submitResult.data.phone}
+          <b>{t("phone")}:</b> {phone}
         </li>
         <li>
-          <b>{t("about")}:</b> {submitResult.data.about}
+          <b>{t("about")}:</b> {about}
         </li>
-        {submitResult.data.avatarUrl ? (
+        {avatarUrl ? (
           <li>
             <b>{t("avatar")}:</b>
             <br />
             <img
-              src={BASE_URL + submitResult.data.avatarUrl}
+              src={BASE_URL + avatarUrl}
               alt={t("avatar")}
               width={150}
               height={150}

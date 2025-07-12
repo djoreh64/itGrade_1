@@ -41,12 +41,14 @@ npm install
 
 ```bash
 npx prisma migrate dev --name init
+npx prisma generate
 ```
 
-или, если миграции уже созданы, нужно просто применить:
+или, если миграции уже созданы:
 
 ```bash
 npx prisma migrate deploy
+npx prisma generate
 ```
 
 Запустить сервер:

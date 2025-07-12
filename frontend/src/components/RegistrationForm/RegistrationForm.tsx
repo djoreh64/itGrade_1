@@ -34,6 +34,7 @@ const RegistrationForm: FC = () => {
     onAvatarChange,
     onSubmit,
     watch,
+    uploadProgress,
   } = useRegistrationForm(dialogRef);
 
   const openDialog = () => {
@@ -219,6 +220,12 @@ const RegistrationForm: FC = () => {
                   onAvatarChange(e.target.files);
                 }}
               />
+
+              {uploadProgress > 0 && uploadProgress < 100 && (
+                <progress value={uploadProgress} max={100}>
+                  {Math.round(uploadProgress)}%
+                </progress>
+              )}
             </div>
 
             {avatarPreview && (

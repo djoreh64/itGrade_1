@@ -9,6 +9,8 @@ export const useRegistrationForm = (
 ) => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [submitResult, setSubmitResult] = useState<null | {
     success: boolean;
     data?: any;
@@ -66,6 +68,7 @@ export const useRegistrationForm = (
 
   const onSubmit = async (data: IFormData) => {
     setSubmitResult(null);
+    setUploadProgress(0);
 
     try {
       const fd = new FormData();
@@ -78,31 +81,53 @@ export const useRegistrationForm = (
       if (data.avatar && data.avatar.length > 0)
         fd.append("avatar", data.avatar[0]);
 
-      const res = await fetch(`${BASE_URL}/submit`, {
-        method: "POST",
-        body: fd,
-      });
+      await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", `${BASE_URL}/submit`);
 
-      const result = await res.json();
-
-      if (res.ok) {
-        setSubmitResult({ success: true, data: result });
-        reset();
-        setAvatarPreview(null);
-        dialogRef?.current?.close();
-        await invalidate();
-      } else {
-        if (result.errors) {
-          for (const [field, message] of Object.entries(result.errors)) {
-            setError(field as keyof IFormData, {
-              type: "server",
-              message: message as string,
-            });
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = (event.loaded / event.total) * 100;
+            setUploadProgress(percent);
           }
-        }
-        setSubmitResult({ success: false, errors: result.errors || {} });
-      }
-    } catch {
+        };
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            const response = JSON.parse(xhr.responseText);
+            setSubmitResult({ success: true, data: response });
+            reset();
+            setAvatarPreview(null);
+            dialogRef?.current?.close();
+            invalidate();
+            setUploadProgress(100);
+            resolve(null);
+          } else {
+            const result = JSON.parse(xhr.responseText);
+            if (result.errors) {
+              for (const [field, message] of Object.entries(result.errors)) {
+                setError(field as keyof IFormData, {
+                  type: "server",
+                  message: message as string,
+                });
+              }
+            }
+            setSubmitResult({ success: false, errors: result.errors || {} });
+            reject(new Error("Ошибка сервера"));
+          }
+        };
+
+        xhr.onerror = () => {
+          setSubmitResult({
+            success: false,
+            errors: { global: "Ошибка при отправке формы" },
+          });
+          reject(new Error("Ошибка сети"));
+        };
+
+        xhr.send(fd);
+      });
+    } catch (err) {
       setSubmitResult({
         success: false,
         errors: { global: "Ошибка при отправке формы" },
@@ -150,6 +175,7 @@ export const useRegistrationForm = (
     submitResult,
     setSubmitResult,
     onAvatarChange,
+    uploadProgress,
     onSubmit,
   };
 };

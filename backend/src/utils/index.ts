@@ -71,7 +71,7 @@ export const logFormSubmission = async (
 
 export const registrationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 20,
   message: {
     errors: {
       global:

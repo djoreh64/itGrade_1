@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type Theme = "light" | "dark" | "system";
 
@@ -18,6 +19,8 @@ const applyTheme = (theme: Theme) => {
 };
 
 const useTheme = () => {
+  const { t } = useTranslation();
+
   const [theme, setTheme] = useState<Theme>(() => getPreferredTheme());
 
   useEffect(() => {
@@ -35,9 +38,9 @@ const useTheme = () => {
   }, [theme]);
 
   const themeLabelMap: Record<Theme, string> = {
-    light: "светлая",
-    dark: "тёмная",
-    system: "системная",
+    light: t("light"),
+    dark: t("dark"),
+    system: t("system"),
   };
 
   return {

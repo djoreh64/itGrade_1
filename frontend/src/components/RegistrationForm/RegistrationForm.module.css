@@ -1,4 +1,9 @@
-@import "../../assets/variables.css";
+@import "@assets/variables.css";
+
+body:has(.dialog[open]) {
+  overflow-y: hidden;
+  max-height: 100vh;
+}
 
 .openBtn {
   padding: 10px 20px;
@@ -26,6 +31,36 @@
   position: relative;
   background-color: var(--bg-color);
   color: var(--text-color);
+  transition: display 0.3s allow-discrete, overlay 0.3s allow-discrete,
+    opacity 0.3s;
+  opacity: 0;
+}
+
+.dialog::-webkit-scrollbar {
+  display: none;
+}
+
+[popover],
+dialog,
+::backdrop {
+  transition: display 1s allow-discrete, overlay 1s allow-discrete, opacity 1s;
+  opacity: 0;
+}
+
+:popover-open,
+:popover-open::backdrop,
+[open],
+[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  :popover-open,
+  :popover-open::backdrop,
+  [open],
+  [open]::backdrop {
+    opacity: 0;
+  }
 }
 
 .closeBtn {
@@ -165,10 +200,6 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px var(--dialog-shadow);
-}
-
-::backdrop {
-  background: var(--backdrop-bg);
 }
 
 .passwordStrengthWrapper {

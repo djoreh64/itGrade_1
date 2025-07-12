@@ -17,6 +17,11 @@ body {
   transition: 0.2s ease background-color;
 }
 
+html,
+body {
+  scrollbar-gutter: stable;
+}
+
 h1 {
   margin-bottom: 8px;
 }
@@ -51,8 +56,4 @@ dialog {
   position: relative;
   background-color: var(--color-bg);
   color: var(--color-text);
-}
-
-dialog::backdrop {
-  background: var(--color-backdrop);
 }

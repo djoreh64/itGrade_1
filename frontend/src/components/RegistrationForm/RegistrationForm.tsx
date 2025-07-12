@@ -13,8 +13,12 @@ import {
   validatePassword,
   validatePhone,
 } from "@utils/validate";
+import LanguageSwitcher from "@components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const RegistrationForm: FC = () => {
+  const { t } = useTranslation();
+
   const dialogRef = useRef<HTMLDialogElement>(null);
   const {
     register,
@@ -47,13 +51,13 @@ const RegistrationForm: FC = () => {
 
   const registerWithValidation = (fieldName: keyof IFormData) => {
     const rules: Record<keyof IFormData, any> = {
-      login: { required: "Логин обязателен" },
-      email: { required: "Email обязателен", validate: validateEmail },
-      phone: { required: "Телефон обязателен", validate: validatePhone },
-      password: { required: "Пароль обязателен", validate: validatePassword },
-      fullName: { required: "ФИО обязательно", validate: validateFullName },
-      about: { required: "О себе обязательно" },
-      avatar: { required: "Аватар обязателен" },
+      login: { required: t("loginRequired") },
+      email: { required: t("emailRequired"), validate: validateEmail },
+      phone: { required: t("phoneRequired"), validate: validatePhone },
+      password: { required: t("passwordRequired"), validate: validatePassword },
+      fullName: { required: t("fullNameRequired"), validate: validateFullName },
+      about: { required: t("aboutRequired") },
+      avatar: { required: t("avatarRequired") },
     };
 
     return register(fieldName, rules[fieldName]);
@@ -63,18 +67,19 @@ const RegistrationForm: FC = () => {
 
   return (
     <>
+      <LanguageSwitcher />
       <ThemeSwitcher setTheme={setTheme} label={label} />
 
-      <h1>Добро пожаловать на наш сайт</h1>
-      <p>Для регистрации, пожалуйста, заполните форму</p>
+      <h1>{t("welcome")}</h1>
+      <p>{t("fillForm")}</p>
       <button type="button" onClick={openDialog} className={styles.openBtn}>
-        Открыть форму регистрации
+        {t("openRegistrationForm")}
       </button>
 
       <dialog ref={dialogRef} className={styles.dialog}>
         <button
           type="button"
-          aria-label="Закрыть форму"
+          aria-label={t("closeForm")}
           onClick={closeDialog}
           className={styles.closeBtn}
         >
@@ -89,7 +94,7 @@ const RegistrationForm: FC = () => {
         >
           <InputField
             id="login"
-            label="Логин"
+            label={t("login")}
             register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
@@ -106,7 +111,7 @@ const RegistrationForm: FC = () => {
 
           <InputField
             id="fullName"
-            label="Ф.И.О."
+            label={t("fullName")}
             register={registerWithValidation}
             errors={errors}
             disabled={isSubmitting}
@@ -114,7 +119,7 @@ const RegistrationForm: FC = () => {
 
           <InputField
             id="email"
-            label="E-Mail"
+            label={t("email")}
             type="email"
             register={registerWithValidation}
             errors={errors}
@@ -123,7 +128,7 @@ const RegistrationForm: FC = () => {
 
           <InputField
             id="phone"
-            label="Телефон"
+            label={t("phone")}
             type="tel"
             register={registerWithValidation}
             errors={errors}
@@ -133,7 +138,7 @@ const RegistrationForm: FC = () => {
 
           <InputField
             id="about"
-            label="О себе"
+            label={t("about")}
             textarea
             rows={3}
             register={registerWithValidation}
@@ -143,7 +148,7 @@ const RegistrationForm: FC = () => {
 
           <div className={styles.group}>
             <label htmlFor="avatar" className={styles.label}>
-              Аватар
+              {t("avatar")}
             </label>
 
             <div
@@ -166,7 +171,7 @@ const RegistrationForm: FC = () => {
               }}
             >
               <div className={styles.dropzoneContent}>
-                <p>Перетащите файл сюда или</p>
+                <p>{t("dragDropFile")}</p>
                 <button
                   type="button"
                   className={styles.chooseBtn}
@@ -175,7 +180,7 @@ const RegistrationForm: FC = () => {
                     inputRef.current?.click();
                   }}
                 >
-                  Выбрать файл
+                  {t("chooseFile")}
                 </button>
                 {file && <span className={styles.fileName}>{file.name}</span>}
               </div>
@@ -200,7 +205,7 @@ const RegistrationForm: FC = () => {
             {avatarPreview && (
               <img
                 src={avatarPreview}
-                alt="Превью аватара"
+                alt={t("avatarPreviewAlt")}
                 className={styles.avatarPreview}
               />
             )}
@@ -211,7 +216,7 @@ const RegistrationForm: FC = () => {
             className={styles.submitBtn}
             disabled={isSubmitting || !isValid}
           >
-            {isSubmitting ? "Отправка..." : "Отправить"}
+            {isSubmitting ? t("submitting") : t("submit")}
           </button>
         </form>
       </dialog>
@@ -222,7 +227,7 @@ const RegistrationForm: FC = () => {
 
       {submitResult && !submitResult.success && (
         <div className={styles.errorMessage}>
-          {submitResult.errors?.global || "Произошла ошибка при отправке формы"}
+          {submitResult.errors?.global || t("formSubmitError")}
         </div>
       )}
     </>

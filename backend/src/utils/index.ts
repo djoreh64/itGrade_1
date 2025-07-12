@@ -1,7 +1,14 @@
 import path from "path";
 import fs from "fs";
+import jwt from "jsonwebtoken";
+
 import { FormFields } from "../types/form";
 import rateLimit from "express-rate-limit";
+import { NextFunction, Request, Response } from "express";
+import { upload } from "../config/multer";
+import multer from "multer";
+
+const JWT_SECRET = process.env.JWT_SECRET ?? "supersecret";
 
 export const escapeHtml = (text: string): string => {
   return text
@@ -81,3 +88,19 @@ export const registrationLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+export const getClientIp = (req: Request): string =>
+  (req.headers["x-forwarded-for"] as string) ||
+  (req.socket as any)?.remoteAddress ||
+  "";
+
+export const generateToken = (userId: number, login: string) =>
+  jwt.sign({ userId, login }, JWT_SECRET, { expiresIn: "7d" });
+
+export const uploadAvatar = (req: Request, res: Response, next: NextFunction) =>
+  upload.single("avatar")(req, res, (err) => {
+    if (err instanceof multer.MulterError || err instanceof Error) {
+      return res.status(400).json({ errors: { avatar: err.message } });
+    }
+    next();
+  });

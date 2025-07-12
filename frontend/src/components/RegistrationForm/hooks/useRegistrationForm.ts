@@ -1,4 +1,4 @@
-import {  useEffect, useState, type RefObject } from "react";
+import { useEffect, useState, type RefObject } from "react";
 import { useForm } from "react-hook-form";
 import type { IFormData } from "@types";
 import { BASE_URL } from "@constants";
@@ -87,8 +87,8 @@ export const useRegistrationForm = (
         setSubmitResult({ success: true, data: result });
         reset();
         setAvatarPreview(null);
-        dialogRef?.current?.close(); 
-        await invalidate()
+        dialogRef?.current?.close();
+        await invalidate();
       } else {
         if (result.errors) {
           for (const [field, message] of Object.entries(result.errors)) {

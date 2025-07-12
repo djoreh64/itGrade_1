@@ -95,6 +95,12 @@
   white-space: pre-wrap;
 }
 
+.themeSwitcher {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
 .textarea {
   height: auto;
 }
@@ -157,4 +163,70 @@
 
 ::backdrop {
   background: var(--backdrop-bg);
+}
+
+.passwordStrengthWrapper {
+  margin-top: 10px;
+}
+
+.passwordProgressBar {
+  height: 8px;
+  background-color: var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.passwordProgress {
+  height: 100%;
+  background-color: var(--color-primary);
+  transition: width 0.4s ease, background-color 0.4s ease;
+  border-radius: 4px;
+}
+
+.passwordStrengthLabel {
+  margin: 8px 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  user-select: none;
+  transition: color 0.4s ease;
+}
+
+.passwordChecklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.passwordChecklist li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text);
+}
+
+.passwordChecklist li::before {
+  content: "❌";
+  color: var(--color-error);
+}
+
+.passwordChecklist .valid::before {
+  content: "✅";
+  color: green;
+}
+
+.passwordStrengthLabel {
+  margin: 8px 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  user-select: none;
+}
+
+.passwordChecklist .valid {
+  color: green;
 }

@@ -1,27 +1,50 @@
 import { useEffect, useState } from "react";
 
-export const useTheme = () => {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+export type Theme = "light" | "dark" | "system";
+
+const getPreferredTheme = (): Theme => {
+  return (localStorage.getItem("theme") as Theme) || "system";
+};
+
+const getSystemTheme = (): "light" | "dark" => {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const applyTheme = (theme: Theme) => {
+  const final = theme === "system" ? getSystemTheme() : theme;
+  document.documentElement.setAttribute("data-theme", final);
+};
+
+const useTheme = () => {
+  const [theme, setTheme] = useState<Theme>(() => getPreferredTheme());
 
   useEffect(() => {
-    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
-    const preferred =
-      saved ??
-      (window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light");
-    setTheme(preferred);
-    document.documentElement.setAttribute("data-theme", preferred);
-  }, []);
+    applyTheme(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
-  const toggleTheme = () => {
-    const next = theme === "light" ? "dark" : "light";
-    setTheme(next);
-    localStorage.setItem("theme", next);
-    document.documentElement.setAttribute("data-theme", next);
+  useEffect(() => {
+    if (theme !== "system") return;
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = () => applyTheme("system");
+    media.addEventListener("change", handler);
+    return () => media.removeEventListener("change", handler);
+  }, [theme]);
+
+  const themeLabelMap: Record<Theme, string> = {
+    light: "светлая",
+    dark: "тёмная",
+    system: "системная",
   };
 
-  return { theme, toggleTheme };
+  return {
+    theme,
+    setTheme,
+    label: themeLabelMap[theme],
+  };
 };
 
 export default useTheme;

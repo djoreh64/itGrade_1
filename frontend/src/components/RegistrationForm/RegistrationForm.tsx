@@ -1,14 +1,11 @@
 import { useRef, type FC } from "react";
 import styles from "./RegistrationForm.module.css";
-import {
-  validateEmail,
-  validateFullName,
-  validatePassword,
-  validatePhone,
-} from "@utils";
 import { useRegistrationForm } from "./hooks/useRegistrationForm";
 import SubmitResult from "@components/SubmitResult";
 import useTheme from "@hooks/useTheme";
+import ThemeSwitcher from "@components/ThemeSwitcher";
+import InputField from "@components/InputField/InputField";
+import PasswordField from "@components/PasswordField/PasswordField";
 
 const RegistrationForm: FC = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -25,6 +22,7 @@ const RegistrationForm: FC = () => {
     submitResult,
     onAvatarChange,
     onSubmit,
+    watch,
   } = useRegistrationForm(dialogRef);
 
   const openDialog = () => {
@@ -34,15 +32,16 @@ const RegistrationForm: FC = () => {
 
   const closeDialog = () => dialogRef.current?.close();
 
-  const { toggleTheme } = useTheme();
+  const { label, setTheme } = useTheme();
+
+  const passwordValue = watch("password");
 
   return (
     <>
-      <button type="button" onClick={toggleTheme} className={styles.openBtn}>
-        ☀️
-      </button>
+      <ThemeSwitcher setTheme={setTheme} label={label} />
+
       <h1>Добро пожаловать на наш сайт</h1>
-      <p>Описание для регистрации, пожалуйста, заполните форму</p>
+      <p>Для регистрации, пожалуйста, заполните форму</p>
       <button type="button" onClick={openDialog} className={styles.openBtn}>
         Открыть форму регистрации
       </button>
@@ -63,149 +62,59 @@ const RegistrationForm: FC = () => {
           noValidate
           encType="multipart/form-data"
         >
-          <div className={styles.group}>
-            <label htmlFor="login" className={styles.label}>
-              Логин
-            </label>
-            <input
-              id="login"
-              {...register("login", {
-                required: "Логин обязателен",
-                pattern: {
-                  value: /^[a-zA-Z0-9]{3,}$/,
-                  message: "Минимум 3 латинские буквы или цифры",
-                },
-              })}
-              className={`${styles.input} ${
-                errors.login ? styles.inputError : ""
-              }`}
-              disabled={isSubmitting}
-              autoComplete="username"
-            />
-            {errors.login && (
-              <div className={styles.errorMessage}>{errors.login.message}</div>
-            )}
-          </div>
+          <InputField
+            id="login"
+            label="Логин"
+            register={register}
+            errors={errors}
+            disabled={isSubmitting}
+          />
 
-          <div className={styles.group}>
-            <label htmlFor="password" className={styles.label}>
-              Пароль
-            </label>
-            <div className={styles.passwordWrapper}>
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                {...register("password", {
-                  required: "Пароль обязателен",
-                  validate: validatePassword,
-                })}
-                className={`${styles.input} ${
-                  errors.password ? styles.inputError : ""
-                }`}
-                disabled={isSubmitting}
-                autoComplete="new-password"
-              />
-              <button
-                type="button"
-                aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
-                onClick={() => setShowPassword((v) => !v)}
-                className={styles.togglePasswordBtn}
-                tabIndex={-1}
-                disabled={isSubmitting}
-              >
-                {showPassword ? "🙈" : "👁"}
-              </button>
-            </div>
-            {errors.password && (
-              <div className={styles.errorMessage}>
-                {errors.password.message}
-              </div>
-            )}
-          </div>
+          <PasswordField
+            register={register}
+            errors={errors}
+            isSubmitting={isSubmitting}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            passwordValue={passwordValue}
+          />
 
-          <div className={styles.group}>
-            <label htmlFor="fullName" className={styles.label}>
-              Ф.И.О.
-            </label>
-            <input
-              id="fullName"
-              {...register("fullName", {
-                required: "ФИО обязательно",
-                validate: validateFullName,
-              })}
-              className={`${styles.input} ${
-                errors.fullName ? styles.inputError : ""
-              }`}
-              disabled={isSubmitting}
-            />
-            {errors.fullName && (
-              <div className={styles.errorMessage}>
-                {errors.fullName.message}
-              </div>
-            )}
-          </div>
+          <InputField
+            id="fullName"
+            label="Ф.И.О."
+            register={register}
+            errors={errors}
+            disabled={isSubmitting}
+          />
 
-          <div className={styles.group}>
-            <label htmlFor="email" className={styles.label}>
-              E-Mail
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register("email", {
-                required: "Email обязателен",
-                validate: validateEmail,
-              })}
-              className={`${styles.input} ${
-                errors.email ? styles.inputError : ""
-              }`}
-              disabled={isSubmitting}
-              autoComplete="email"
-            />
-            {errors.email && (
-              <div className={styles.errorMessage}>{errors.email.message}</div>
-            )}
-          </div>
+          <InputField
+            id="email"
+            label="E-Mail"
+            type="email"
+            register={register}
+            errors={errors}
+            disabled={isSubmitting}
+          />
 
-          <div className={styles.group}>
-            <label htmlFor="phone" className={styles.label}>
-              Телефон
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              placeholder="+7 (___) ___-__-__"
-              {...register("phone", {
-                required: "Телефон обязателен",
-                validate: validatePhone,
-              })}
-              className={`${styles.input} ${
-                errors.phone ? styles.inputError : ""
-              }`}
-              disabled={isSubmitting}
-            />
-            {errors.phone && (
-              <div className={styles.errorMessage}>{errors.phone.message}</div>
-            )}
-          </div>
+          <InputField
+            id="phone"
+            label="Телефон"
+            type="tel"
+            register={register}
+            errors={errors}
+            disabled={isSubmitting}
+            placeholder="+7 (___) ___-__-__"
+          />
 
-          <div className={styles.group}>
-            <label htmlFor="about" className={styles.label}>
-              О себе
-            </label>
-            <textarea
-              id="about"
-              rows={3}
-              {...register("about", { required: "Поле обязательно" })}
-              className={`${styles.input} ${styles.textarea} ${
-                errors.about ? styles.inputError : ""
-              }`}
-              disabled={isSubmitting}
-            />
-            {errors.about && (
-              <div className={styles.errorMessage}>{errors.about.message}</div>
-            )}
-          </div>
+          <InputField
+            id="about"
+            label="О себе"
+            textarea
+            rows={3}
+            register={register}
+            errors={errors}
+            disabled={isSubmitting}
+          />
 
           <div className={styles.group}>
             <label htmlFor="avatar" className={styles.label}>

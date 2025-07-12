@@ -3,11 +3,18 @@ import path from "path";
 import multer from "multer";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
 import { upload, uploadDir } from "./config/multer";
 import prisma from "./config/prismaClient";
 import { FormFields } from "./types/form";
-import { logFormSubmission, validateFormData } from "./utils";
+import {
+  logFormSubmission,
+  registrationLimiter,
+  validateFormData,
+} from "./utils";
 import { sendWelcomeEmail } from "./config/emailService";
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
@@ -19,6 +26,7 @@ app.use(express.json());
 
 app.post(
   "/submit",
+  registrationLimiter,
   (req, res, next) =>
     upload.single("avatar")(req, res, (err) => {
       if (err instanceof multer.MulterError || err instanceof Error)
@@ -54,7 +62,9 @@ app.post(
         console.error("Ошибка при отправке письма:", emailError);
       }
 
-      await logFormSubmission(data, file?.filename);
+      const ip =
+        req.headers["x-forwarded-for"] || req.socket.remoteAddress || "";
+      await logFormSubmission(data, file?.filename, ip as string);
 
       res.json({
         login: user.login,

@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import { FormFields } from "../types/form";
+import rateLimit from "express-rate-limit";
 
 export const escapeHtml = (text: string): string => {
   return text
@@ -50,11 +51,13 @@ export const validateFormData = (data: FormFields): Record<string, string> => {
 
 export const logFormSubmission = async (
   data: FormFields,
-  fileName?: string
+  fileName: string | undefined,
+  ip: string
 ): Promise<void> => {
   const timestamp = new Date().toISOString();
   const logEntry = {
     timestamp,
+    ip,
     data,
     avatar: fileName ?? null,
   };
@@ -65,3 +68,16 @@ export const logFormSubmission = async (
   await fs.promises.mkdir(path.dirname(logFilePath), { recursive: true });
   await fs.promises.appendFile(logFilePath, logLine, "utf8");
 };
+
+export const registrationLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: {
+    errors: {
+      global:
+        "Слишком много попыток регистрации с вашего IP. Пожалуйста, попробуйте позже.",
+    },
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

@@ -3,13 +3,16 @@ import "./assets/index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import UserList from "@components/UserList/UserList";
 import "./i18n";
+import type { FC } from "react";
 
 export const queryClient = new QueryClient();
 
-const App = () => (
+const App: FC = () => (
   <QueryClientProvider client={queryClient}>
-    <RegistrationForm />
-    <UserList />
+    <main className="main">
+      <RegistrationForm />
+      <UserList />
+    </main>
   </QueryClientProvider>
 );
 

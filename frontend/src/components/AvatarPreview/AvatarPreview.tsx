@@ -7,12 +7,12 @@ interface Props {
 }
 
 const AvatarPreview: FC<Props> = ({ src }) =>
-  src ? (
+  src && (
     <img
       src={src}
       alt={t("avatarPreviewAlt")}
       className={styles.avatarPreview}
     />
-  ) : null;
+  );
 
 export default AvatarPreview;

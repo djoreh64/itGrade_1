@@ -1,7 +1,8 @@
-import type { FC } from "react";
+import type { ChangeEvent, FC, InputHTMLAttributes } from "react";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
+interface Props
+  extends InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   id: string;
   label: string;
   register: any;
@@ -11,7 +12,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAre
   placeholder?: string;
   textarea?: boolean;
   rows?: number;
-  onChange?: (e: React.ChangeEvent<any>) => void;
+  onChange?: (e: ChangeEvent<any>) => void;
 }
 
 const InputField: FC<Props> = ({
@@ -28,7 +29,7 @@ const InputField: FC<Props> = ({
   ...props
 }) => {
   const { onChange: rhfOnChange, onBlur: rhfOnBlur, ref, name } = register(id);
-  const handleChange = (e: React.ChangeEvent<any>) => {
+  const handleChange = (e: ChangeEvent<any>) => {
     rhfOnChange(e);
     if (onChange) onChange(e);
   };

@@ -5,7 +5,8 @@ import { BASE_URL } from "@constants";
 import { useUsersActions } from "@hooks/useUsers";
 
 export const useRegistrationForm = (
-  dialogRef: RefObject<HTMLDialogElement | null>
+  dialogRef: RefObject<HTMLDialogElement | null>,
+  formRef: RefObject<HTMLFormElement | null>
 ) => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -28,8 +29,9 @@ export const useRegistrationForm = (
     setError,
   } = useForm<IFormData>({
     mode: "onBlur",
-    reValidateMode: "onBlur",
+    reValidateMode: "onChange",
     shouldUnregister: false,
+
     defaultValues: {
       login: "",
       password: "",
@@ -37,9 +39,15 @@ export const useRegistrationForm = (
       email: "",
       phone: "",
       about: "",
-      avatar: null,
+      avatar: undefined,
     },
   });
+
+  useEffect(() => {
+    if (submitResult?.success === false && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [submitResult]);
 
   const phoneValue = watch("phone");
   useEffect(() => {
@@ -96,7 +104,15 @@ export const useRegistrationForm = (
           if (xhr.status >= 200 && xhr.status < 300) {
             const response = JSON.parse(xhr.responseText);
             setSubmitResult({ success: true, data: response });
-            reset();
+            reset({
+              login: "",
+              password: "",
+              fullName: "",
+              email: "",
+              phone: "",
+              about: "",
+              avatar: undefined,
+            });
             localStorage.removeItem(STORAGE_KEY);
             setAvatarPreview(null);
             dialogRef?.current?.close();

@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { useState, type FC } from "react";
 import { useUsers } from "@hooks/useUsers";
 import { BASE_URL } from "@constants";
 import styles from "./UsersList.module.css";
 import { useTranslation } from "react-i18next";
 
-const UserList = () => {
-  const { t } = useTranslation();
-
+const UserList: FC = () => {
   const [page, setPage] = useState(0);
+
   const limit = 10;
   const offset = page * limit;
 
+  const { t } = useTranslation();
   const { data, isLoading, error } = useUsers(offset, limit);
 
   if (isLoading) return <p>{t("loadingUsers")}</p>;
@@ -20,6 +20,7 @@ const UserList = () => {
         {t("error")}: {error.message}
       </p>
     );
+
   if (!data?.users.length) return null;
 
   const totalPages = Math.ceil(data.pagination.total / limit);

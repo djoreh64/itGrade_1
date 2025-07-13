@@ -1,20 +1,18 @@
-import AvatarPreview from "@components/AvatarPreview";
-import InputField from "@components/InputField/InputField";
-import LanguageSwitcher from "@components/LanguageSwitcher";
-import PasswordField from "@components/PasswordField/PasswordField";
-import SubmitResult from "@components/SubmitResult";
-import ThemeSwitcher from "@components/ThemeSwitcher";
-import { VALIDATION_RULES } from "@constants";
+import * as Form from "@components";
 import useTheme from "@hooks/useTheme";
 import type { IFormData } from "@types";
+import { getValidationRules } from "@utils/validate";
 import { t } from "i18next";
-import { useRef, type FC } from "react";
+import { useMemo, useRef, type FC } from "react";
 import styles from "./RegistrationForm.module.css";
 import { useRegistrationForm } from "./hooks/useRegistrationForm";
 
 const RegistrationForm: FC = () => {
   const { label, setTheme } = useTheme();
+  const validationRules = getValidationRules();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
   const {
     register,
     handleSubmit,
@@ -29,8 +27,7 @@ const RegistrationForm: FC = () => {
     onAvatarChange,
     onSubmit,
     watch,
-    uploadProgress,
-  } = useRegistrationForm(dialogRef);
+  } = useRegistrationForm(dialogRef, formRef);
 
   const openDialog = () => {
     dialogRef.current?.showModal();
@@ -38,42 +35,31 @@ const RegistrationForm: FC = () => {
   };
 
   const closeDialog = () => dialogRef.current?.close();
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      rhfOnChange({ target: { files } });
-      onAvatarChange(files);
-    }
-  };
-
-  const handleDropzoneClick = () => inputRef.current?.click();
-
-  const handleDropzoneKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      inputRef.current?.click();
-    }
-  };
-
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const { onChange: rhfOnChange, ...avatarRegister } = register("avatar");
 
   const registerWithValidation = (fieldName: keyof IFormData) =>
-    register(fieldName, VALIDATION_RULES[fieldName]);
+    register(fieldName, validationRules[fieldName] as any);
 
   const file = watch("avatar")?.[0];
+
   const passwordValue = watch("password");
   const aboutValue = watch("about") || "";
 
   const maxAboutLength = 500;
-  const remainingChars = maxAboutLength - aboutValue.length;
-  const aboutPercent = (aboutValue.length / maxAboutLength) * 100;
+
+  const remainingChars = useMemo(
+    () => maxAboutLength - aboutValue.length,
+    [aboutValue]
+  );
+  const aboutPercent = useMemo(
+    () => (aboutValue.length / maxAboutLength) * 100,
+    [aboutValue]
+  );
 
   return (
     <>
-      <LanguageSwitcher />
-      <ThemeSwitcher setTheme={setTheme} label={label} />
+      <Form.LanguageSwitcher />
+      <Form.ThemeSwitcher setTheme={setTheme} label={label} />
 
       <h1>{t("welcome")}</h1>
       <p>{t("fillForm")}</p>
@@ -95,9 +81,10 @@ const RegistrationForm: FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           className={styles.form}
           noValidate
+          ref={formRef}
           encType="multipart/form-data"
         >
-          <InputField
+          <Form.InputField
             id="login"
             label={t("login")}
             register={registerWithValidation}
@@ -105,7 +92,7 @@ const RegistrationForm: FC = () => {
             disabled={isSubmitting}
           />
 
-          <PasswordField
+          <Form.PasswordField
             register={registerWithValidation}
             errors={errors}
             isSubmitting={isSubmitting}
@@ -114,7 +101,7 @@ const RegistrationForm: FC = () => {
             passwordValue={passwordValue}
           />
 
-          <InputField
+          <Form.InputField
             id="fullName"
             label={t("fullName")}
             register={registerWithValidation}
@@ -122,7 +109,7 @@ const RegistrationForm: FC = () => {
             disabled={isSubmitting}
           />
 
-          <InputField
+          <Form.InputField
             id="email"
             label={t("email")}
             type="email"
@@ -131,7 +118,7 @@ const RegistrationForm: FC = () => {
             disabled={isSubmitting}
           />
 
-          <InputField
+          <Form.InputField
             id="phone"
             label={t("phone")}
             type="tel"
@@ -141,7 +128,7 @@ const RegistrationForm: FC = () => {
             placeholder="+7 (___) ___-__-__"
           />
 
-          <InputField
+          <Form.InputField
             id="about"
             label={t("about")}
             textarea
@@ -171,54 +158,13 @@ const RegistrationForm: FC = () => {
               {t("avatar")}
             </label>
 
-            <div
-              role="button"
-              className={styles.dropzone}
-              tabIndex={0}
-              onClick={handleDropzoneClick}
-              onKeyDown={handleDropzoneKeyDown}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleDrop}
-            >
-              <div className={styles.dropzoneContent}>
-                <p>{t("dragDropFile")}</p>
-                <button
-                  type="button"
-                  className={styles.chooseBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    inputRef.current?.click();
-                  }}
-                >
-                  {t("chooseFile")}
-                </button>
-                {file && <span className={styles.fileName}>{file.name}</span>}
-              </div>
-
-              <input
-                type="file"
-                accept="image/*"
-                name="avatar"
-                className={styles.hiddenInput}
-                ref={(el) => {
-                  inputRef.current = el;
-                  avatarRegister.ref(el);
-                }}
-                onBlur={avatarRegister.onBlur}
-                onChange={(e) => {
-                  rhfOnChange(e);
-                  onAvatarChange(e.target.files);
-                }}
-              />
-
-              {uploadProgress > 0 && uploadProgress < 100 && (
-                <progress value={uploadProgress} max={100}>
-                  {Math.round(uploadProgress)}%
-                </progress>
-              )}
-            </div>
-
-            <AvatarPreview src={avatarPreview} />
+            <Form.Dropzone
+              onAvatarChange={onAvatarChange}
+              rhfOnChange={rhfOnChange}
+              file={file}
+              avatarRegister={avatarRegister}
+            />
+            <Form.AvatarPreview src={avatarPreview} />
           </div>
 
           <button
@@ -232,7 +178,7 @@ const RegistrationForm: FC = () => {
       </dialog>
 
       {submitResult && submitResult.success && (
-        <SubmitResult submitResult={submitResult} />
+        <Form.SubmitResult submitResult={submitResult} />
       )}
 
       {submitResult && !submitResult.success && (

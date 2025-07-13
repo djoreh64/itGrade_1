@@ -1,8 +1,8 @@
-import React from "react";
+import { type FC } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./LanguageSwitcher.module.css";
 
-const LanguageSwitcher: React.FC = () => {
+const LanguageSwitcher: FC = () => {
   const { i18n } = useTranslation();
   const currentLang = i18n.language.startsWith("ru") ? "ru" : "en";
 

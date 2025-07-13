@@ -1,4 +1,4 @@
-import { type FC } from "react";
+import { type Dispatch, type FC, type SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "../RegistrationForm/RegistrationForm.module.css";
 import { usePasswordStrength } from "@hooks/usePasswordStrength";
@@ -9,7 +9,7 @@ interface Props {
   errors: any;
   isSubmitting: boolean;
   showPassword: boolean;
-  setShowPassword: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowPassword: Dispatch<SetStateAction<boolean>>;
   passwordValue: string;
 }
 
@@ -24,12 +24,14 @@ const PasswordField: FC<Props> = ({
   const { t } = useTranslation();
   const { checks, strength } = usePasswordStrength(passwordValue);
 
-  const getStrengthColor = (strength: number) => {
-    if (strength >= 80) return "#4caf50";
-    if (strength >= 50) return "#f0a500";
-    return "#e55353";
+  const getStrengthInfo = (strength: number) => {
+    if (strength >= 80) return { label: t("strong"), color: "#4caf50" };
+    if (strength >= 50) return { label: t("medium"), color: "#f0a500" };
+    return { label: t("weak"), color: "#e55353" };
   };
-  const strengthColor = getStrengthColor(strength);
+
+  const { color: strengthColor, label: strengthLabel } =
+    getStrengthInfo(strength);
 
   return (
     <div className={styles.group}>
@@ -74,11 +76,7 @@ const PasswordField: FC<Props> = ({
           className={styles.passwordStrengthLabel}
           style={{ color: strengthColor }}
         >
-          {strength >= 80
-            ? t("strong")
-            : strength >= 50
-            ? t("medium")
-            : t("weak")}
+          {strengthLabel}
         </div>
 
         <ul className={styles.passwordChecklist}>
@@ -88,7 +86,9 @@ const PasswordField: FC<Props> = ({
           <li className={checks.lower ? styles.valid : ""}>{t("lowercase")}</li>
           <li className={checks.upper ? styles.valid : ""}>{t("uppercase")}</li>
           <li className={checks.digit ? styles.valid : ""}>{t("digit")}</li>
-          <li className={checks.special ? styles.valid : ""}>{t("specialChar")}</li>
+          <li className={checks.special ? styles.valid : ""}>
+            {t("specialChar")}
+          </li>
         </ul>
       </div>
 

@@ -1,3 +1,4 @@
+import { t } from "i18next";
 
 export const validateEmail = (value: string) => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -31,3 +32,25 @@ export const validateFullName = (value: string) => {
 
   return true;
 };
+
+export const getValidationRules = () => ({
+  login: { required: { value: true, message: t("loginRequired") } },
+  email: {
+    required: { value: true, message: t("emailRequired") },
+    validate: validateEmail,
+  },
+  phone: {
+    required: { value: true, message: t("phoneRequired") },
+    validate: validatePhone,
+  },
+  password: {
+    required: { value: true, message: t("passwordRequired") },
+    validate: validatePassword,
+  },
+  fullName: {
+    required: { value: true, message: t("fullNameRequired") },
+    validate: validateFullName,
+  },
+  about: { required: { value: true, message: t("aboutRequired") } },
+  avatar: { required: { value: true, message: t("avatarRequired") } },
+});

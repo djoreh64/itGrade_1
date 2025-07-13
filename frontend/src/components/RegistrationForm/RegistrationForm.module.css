@@ -6,6 +6,8 @@ body:has(.dialog[open]) {
 }
 
 .openBtn {
+  display: flex;
+  flex-grow: 1;
   padding: 10px 20px;
   font-size: 1rem;
   border-radius: 6px;
@@ -14,7 +16,6 @@ body:has(.dialog[open]) {
   color: white;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-bottom: 20px;
 }
 
 .openBtn:hover {
@@ -139,6 +140,7 @@ dialog,
 .themeSwitcher > div {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -193,13 +195,24 @@ dialog,
 }
 
 .result {
-  max-width: 420px;
-  margin: 0 auto;
+  width: 100%;
+  gap: 12px;
+  margin-top: 24px;
   background: var(--success-bg);
   color: var(--success-text);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px var(--dialog-shadow);
+  padding: 12px;
+  border-radius: 24px;
+}
+
+.result ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result img {
+  margin-top: 14px;
+  border-radius: 50%;
 }
 
 .passwordStrengthWrapper {
@@ -372,7 +385,7 @@ dialog,
 
 .aboutProgress {
   height: 100%;
-  background-color: #4caf50; 
+  background-color: #4caf50;
   transition: width 0.3s ease;
 }
 

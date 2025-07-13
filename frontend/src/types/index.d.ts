@@ -5,5 +5,11 @@ export interface IFormData {
   email: string;
   phone: string;
   about: string;
-  avatar: FileList | null;
+  avatar?: FileList;
+}
+
+export interface ISubmitResult {
+  success: boolean;
+  data?: any;
+  errors?: Record<string, string>;
 }
